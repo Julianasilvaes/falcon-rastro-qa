@@ -1,0 +1,45 @@
+name: Testes automatizados
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+  schedule:
+    - cron: "0 11 * * 1-5"
+
+jobs:
+  testes:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+      SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
+      QA_EMAIL: ${{ secrets.QA_EMAIL }}
+      QA_SENHA: ${{ secrets.QA_SENHA }}
+      SITE_URL: ${{ secrets.SITE_URL }}
+    steps:
+      - name: Baixar o projeto
+        uses: actions/checkout@v4
+
+      - name: Instalar o Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Instalar as bibliotecas
+        run: pip install -r requirements.txt
+
+      - name: Instalar o navegador do Playwright
+        run: python -m playwright install --with-deps chromium
+
+      - name: Rodar os testes
+        run: pytest testes -v --junitxml=resultado.xml
+
+      - name: Guardar o resultado
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: resultado-dos-testes
+          path: resultado.xml
