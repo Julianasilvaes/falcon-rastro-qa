@@ -1,4 +1,4 @@
-# Falcon Rastro QA
+# Automação de Testes | Sistema de Gestão para Rastreamento Veicular
 
 ![Testes automatizados](https://github.com/Julianasilvaes/falcon-rastro-qa/actions/workflows/testes.yml/badge.svg)
 
